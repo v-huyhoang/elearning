@@ -3,6 +3,7 @@ import { manrope } from "@/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Ucademy",
@@ -16,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={manrope.className}>
           <ThemeProvider
             attribute="class"
@@ -25,6 +26,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <ToastContainer autoClose={2000} className="text-sm font-medium" />
           </ThemeProvider>
         </body>
       </html>
