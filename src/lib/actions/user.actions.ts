@@ -3,6 +3,8 @@
 import User, { IUser } from "@/database/user.model";
 import { TCreateUserParams } from "@/types";
 import { connectToDatabase } from "../mongoose";
+import { cache } from "react";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function createUser(params: TCreateUserParams) {
   try {
@@ -13,17 +15,21 @@ export async function createUser(params: TCreateUserParams) {
     console.log(error);
   }
 }
-export async function getUserInfo({
-  userId,
-}: {
-  userId: string;
-}): Promise<IUser | null | undefined> {
+export const getCurrentUser = cache(async (): Promise<IUser | null> => {
   try {
-    connectToDatabase();
-    const findUser = await User.findOne({ clerkId: userId });
-    if (!findUser) return null;
-    return findUser;
+    await connectToDatabase();
+
+    const clerkUser = await currentUser();
+
+    if (!clerkUser) return null;
+
+    const user = await User.findOne({ clerkId: clerkUser.id });
+    console.log("getCurrentUser:", user);
+    if (!user) return null;
+
+    return user as IUser;
   } catch (error) {
-    console.log(error);
+    console.error("getCurrentUser error:", error);
+    return null;
   }
-}
+});

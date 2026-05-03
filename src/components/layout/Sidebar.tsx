@@ -6,9 +6,13 @@ import Link from "next/link";
 import { ActiveLink } from "../common";
 import { ModeToggle } from "../common/ModeToggle";
 import { IconUsers } from "../icons";
+import { useCurrentUser } from "../provider/UserProvider";
 
 const Sidebar = () => {
   const { userId } = useAuth();
+  const user = useCurrentUser();
+  console.log(user);
+
   return (
     <div className="p-5 border-r border-r-gray-200 dark:border-opacity-10 bg-white dark:bg-grayDarker flex flex-col">
       <a
